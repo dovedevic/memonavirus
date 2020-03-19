@@ -51,7 +51,6 @@ _infectionlog = open("../data/memes_infections.{}.{}.log".format(datetime.dateti
 logger.info("Finished setting up.")
 # End Variables
 
-
 def on_comment(comment: models.Comment):
     try:
         parent = comment.parent()
@@ -99,23 +98,18 @@ def infect(comment: models.Comment, infected_by: typing.Union[models.Comment, mo
             "C" if type(infected_by) is models.Comment else "S"
         ))
 
-        # if not self._debug:
-        #     infected_by.subreddit.flair.set(comment.author, flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
-        #     await self._channel.send("☣ Redditor u/{} was infected because of the {} by u/{}".format(
-        #         comment.author.name,
-        #         "comment" if type(infected_by) is models.Comment else "submission",
-        #         "deleted" if not infected_by.author else infected_by.author.name
-        #     ))
-        #     comment.author.message(
-        #         "☣ You were infected by the r/memes Memonavirus ☣",
-        #         "Hey u/{},\n\nYou contracted the r/memes Memonavirus from u/{}! You contracted it because you commented on their {}, [linked here](https://www.reddit.com{}).\n\n## Don't know what this is about?\n\n[Check out this announcement to see what this is about!](https://www.reddit.com/r/memes/comments/cu5ep9/community_awards_yes_please/)".
-        #         format(
-        #             comment.author.name,
-        #             infected_by.author.name,
-        #             "comment" if type(infected_by) is models.Comment else "submission",
-        #             infected_by.permalink
-        #         )
-        #     )
+        if not _debug:
+            infected_by.subreddit.flair.set(comment.author, flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
+            # comment.author.message(
+            #     "☣ You were infected by the r/memes Memonavirus ☣",
+            #     "Hey u/{},\n\nYou contracted the r/memes Memonavirus from u/{}! You contracted it because you commented on their {}, [linked here](https://www.reddit.com{}).\n\n## Don't know what this is about?\n\n[Check out this announcement to see what this is about!](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/)".
+            #     format(
+            #         comment.author.name,
+            #         infected_by.author.name,
+            #         "comment" if type(infected_by) is models.Comment else "submission",
+            #         infected_by.permalink
+            #     )
+            # )
 
     except Exception as ex:
         logger.info("ERROR IN INFECT")
@@ -141,16 +135,16 @@ def save_data_new_hour(force=False):
         _infectionlog = open("../data/memes_infections.{}.{}.log".format(today.day, today.hour), "a")
 
         logger.info("Data files are saved. Uploading...")
-        with open("../data/{}".format(repo_cmnt_filename), 'r') as fp:
+        with open(repo_cmnt_filename, 'r') as fp:
             _repo.create_file(
                 "data/{}".format(repo_cmnt_filename),
-                "day {} hour {} automated hourly comment update".format(repo_cmnt_filename.split('.')[1], repo_cmnt_filename.split('.')[2]),
+                "day {} hour {} automated hourly comment update".format(repo_cmnt_filename.split('.')[-3], repo_cmnt_filename.split('.')[-2]),
                 fp.read()
             )
-        with open("../data/{}".format(repo_infc_filename), 'r') as fp:
+        with open(repo_infc_filename, 'r') as fp:
             _repo.create_file(
                 "data/{}".format(repo_infc_filename),
-                "day {} hour {} automated hourly infection  update".format(repo_infc_filename.split('.')[1], repo_infc_filename.split('.')[2]),
+                "day {} hour {} automated hourly infection  update".format(repo_infc_filename.split('.')[-3], repo_infc_filename.split('.')[-2]),
                 fp.read()
             )
 
