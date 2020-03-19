@@ -130,3 +130,9 @@ dmypy.json
 
 # Logs folder
 logs/
+
+# Ignore creds file
+src/creds.json
+
+# Ignore project files
+.idea/
