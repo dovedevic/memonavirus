@@ -39,7 +39,8 @@ logger.info("Authenticated as {}".format(_reddit.user.me().name))
 
 logger.info("Authenticating with Github...")
 _github = github.Github(credentials["GITHUB_TOKEN"])
-logger.info("Authenticated as {}".format(_github.get_user().name))
+_repo = _github.get_repo("dovedevic/memonavirus")
+logger.info("Authenticated as {} into {}".format(_github.get_user().name, _repo.full_name))
 
 # Variables
 logger.info("Setting up variables and environment...")
@@ -63,8 +64,8 @@ def on_comment(comment: models.Comment):
             # Did an uninfected person reply to an infected persons submission? Roll dice for a 1 in 100
             if parent.author_flair_text and "INFECTED" in parent.author_flair_text and ((comment.author_flair_text and "INFECTED" not in comment.author_flair_text) or not comment.author_flair_text) and random.randint(1, 100) == 69:
                 infect(comment, parent)
-        if _debug:
-            print(comment)
+        # if _debug:
+        #     print(comment)
         # TSV Format: Timestamp, Commentor Name, Commentor Comment ID, Commented on User, Commented on Item ID, Item Type, Commented on ?Infected? User
         _commentlog.write("{}\tu/{}\t{}\tu/{}\t{}\t{}\t{}\n".format(
             str(datetime.datetime.now()),
@@ -128,12 +129,31 @@ def save_data_new_hour(force=False):
     if today.hour != _hour or force:
         logger.info("Data files are being saved...")
         _hour = today.hour
+
         _commentlog.flush()
+        repo_cmnt_filename = _commentlog.name
         _commentlog.close()
-        _commentlog = open("data/memes_comments.{}.{}.log".format(today.day, today.hour), "a")
+        _commentlog = open("../data/memes_comments.{}.{}.log".format(today.day, today.hour), "a")
+
         _infectionlog.flush()
+        repo_infc_filename = _infectionlog.name
         _infectionlog.close()
-        _infectionlog = open("data/memes_infections.{}.{}.log".format(today.day, today.hour), "a")
+        _infectionlog = open("../data/memes_infections.{}.{}.log".format(today.day, today.hour), "a")
+
+        logger.info("Data files are saved. Uploading...")
+        with open("../data/{}".format(repo_cmnt_filename), 'r') as fp:
+            _repo.create_file(
+                "data/{}".format(repo_cmnt_filename),
+                "day {} hour {} automated hourly comment update".format(repo_cmnt_filename.split('.')[1], repo_cmnt_filename.split('.')[2]),
+                fp.read()
+            )
+        with open("../data/{}".format(repo_infc_filename), 'r') as fp:
+            _repo.create_file(
+                "data/{}".format(repo_infc_filename),
+                "day {} hour {} automated hourly infection  update".format(repo_infc_filename.split('.')[1], repo_infc_filename.split('.')[2]),
+                fp.read()
+            )
+
         logger.info("Done. `{}.{}` dataset is now live".format(today.day, today.hour))
 
 
@@ -143,6 +163,7 @@ while True:
     try:
         for cmt in _reddit.subreddit('memes').stream.comments(skip_existing=True):
             on_comment(cmt)
+            save_data_new_hour()
     except Exception as ex:
         logging.info("An error occurred in the comment thread. It was:\n{}".format(str(ex)))
 
