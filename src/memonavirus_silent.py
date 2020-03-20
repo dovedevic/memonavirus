@@ -110,7 +110,7 @@ def infect(comment: models.Comment, infected_by: typing.Union[models.Comment, mo
 
         _infected.add(comment.author.name)
         # Checkpoint our infected list every 15 users
-        if len(_infected) + 1 % 15 == 0:
+        if len(_infected) % 15 == 0:
             with open("infected.checkpoint", 'w') as fp:
                 for inf in _infected:
                     fp.write("{}\n".format(inf))
