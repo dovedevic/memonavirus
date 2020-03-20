@@ -65,7 +65,6 @@ def on_comment(comment: models.Comment):
     try:
         parent = comment.parent()
         if type(parent) is models.Comment:
-            print(comment, comment.author, parent, parent.author)
             # Did an uninfected person reply to an infected persons comment?
             if parent.author and parent.author.name in _infected and comment.author.name not in _infected:
                 # infection!
@@ -125,9 +124,6 @@ def infect(comment: models.Comment, infected_by: typing.Union[models.Comment, mo
 def save_data_new_hour(force=False):
     global _hour, _commentlog, _infectionlog
     today = datetime.datetime.today()
-    # Send a 5 minute heartbeat for canary testing
-    if today.minute % 5 == 0:
-        logging.debug("heartbeat: {}".format(today))
     if today.hour != _hour or force:
         logger.info("Data files are being saved...")
         _hour = today.hour
