@@ -30,7 +30,8 @@ for pif in past_infection_files:
         for line in fp.readlines():
             try:
                 # TSV Format: Timestamp, Contractor Name, Contractor Comment ID, Commented on User, Commented on Item, Item Type
-                subbie.flair.set(_reddit.redditor(line.split('\t')[1]), flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
-                print(_reddit.redditor(line.split('\t')[1]).name, "infected")
+                redditor = _reddit.redditor(line.split('\t')[1])
+                subbie.flair.set(redditor, flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
+                print(redditor.name, "infected")
             except:
                 print(line, "error in infection")
