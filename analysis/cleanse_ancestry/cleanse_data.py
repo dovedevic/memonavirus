@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[26]:
+# In[6]:
 
 
 import pandas
@@ -29,10 +29,10 @@ get_file = lambda fname: pandas.read_csv(
 
 PATIENT_0 = 'u/woodendoors7'
 FIRST_FILE = '../../data/memes_infections.20.19.log'
-FIX_FILE = '../../data/memes_infections.21.20.log'
+FIX_FILE = '../../data/memes_infections.21.21.log'
 
 
-# In[31]:
+# In[9]:
 
 
 # memes_infections.20.19.log - add row for patient 0 infection
@@ -48,14 +48,13 @@ with open(FIRST_FILE, 'w') as f:
         ))
 
 
-# In[29]:
+# In[8]:
 
 
 # fix ancestry
 
-infectee_log = set()
-
 def fix_ancestry(fname):
+    infectee_log = set()
     for _fname in all_files:
         print(_fname)
         df = get_file(_fname)
@@ -70,6 +69,7 @@ def fix_ancestry(fname):
 
         # remove rows and write new log
         if removal_indexes:
+            print(len(removal_indexes))
             df.sort_index(inplace=True)
             df.drop(removal_indexes, inplace=True)
             df.to_csv(_fname, sep='\t', header=None, index=False)
@@ -77,7 +77,7 @@ def fix_ancestry(fname):
             break
 
 
-# In[30]:
+# In[10]:
 
 
 fix_ancestry(FIX_FILE)
