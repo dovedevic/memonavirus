@@ -24,14 +24,14 @@ print("Authenticated as {}".format(_reddit.user.me().name))
 
 
 past_infection_files = ["../data/" + f for f in os.listdir("../data") if f.startswith("memes_infections") and f.endswith(".log")]
-subbie = _reddit.subreddit("memes")
 for pif in past_infection_files:
     with open(pif, "r") as fp:
         for line in fp.readlines():
             try:
                 # TSV Format: Timestamp, Contractor Name, Contractor Comment ID, Commented on User, Commented on Item, Item Type
-                redditor = _reddit.redditor(line.split('\t')[1])
-                subbie.flair.set(redditor, flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
-                print(redditor.name, "infected")
-            except:
+
+                _reddit.subreddit("memes").flair.set(line.split('\t')[1].replace("u/", ""), flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
+                print(line.strip(), "infected")
+            except Exception as ex:
+                print(ex)
                 print(line, "error in infection")
