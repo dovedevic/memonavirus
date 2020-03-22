@@ -18,3 +18,9 @@ In this directory you'll find all the analysis scripts (both python and js) for 
     * Shows the total number of infections increased by hour
   * output/
     * Contains all output from the `trends/` folder
+* cleanse_ancestry/
+  * cleanse_data.py
+    * script to cleanse data
+  * cleanse_data.ipynb
+    * notebook with same code
+
