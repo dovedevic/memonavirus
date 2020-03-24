@@ -46,7 +46,7 @@ logger.info("Authenticated as {} into {}".format(_github.get_user().name, _repo.
 # Variables
 logger.info("Setting up variables and environment...")
 _hour = datetime.datetime.today().hour
-_debug = True
+_debug = False
 _commentlog = open("../data/memes_comments.{}.{}.log".format(datetime.datetime.today().day, datetime.datetime.today().hour), "a")
 _infectionlog = open("../data/memes_infections.{}.{}.log".format(datetime.datetime.today().day, datetime.datetime.today().hour), "a")
 logger.info("Finished setting up.")
@@ -102,16 +102,16 @@ def infect(comment: models.Comment, infected_by: typing.Union[models.Comment, mo
 
         if not _debug:
             infected_by.subreddit.flair.set(comment.author, flair_template_id='0e8e4996-604b-11ea-bd19-0eedcb93a73d')
-            comment.author.message(
-                "☣ You were infected by the r/memes Memonavirus ☣",
-                "Hey u/{},\n\nYou contracted the r/memes Memonavirus from u/{}! You contracted it because you commented on their {}, [linked here](https://www.reddit.com{}).\n\n## Don't know what this is about?\n\nCheck out [this announcement](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) or [this update thread](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) to see what this is about!]\n\n\n\n^This ^is ^a ^bot. ^This ^was ^performed ^automatically.".
-                format(
-                    comment.author.name,
-                    infected_by.author.name,
-                    "comment" if type(infected_by) is models.Comment else "submission",
-                    infected_by.permalink
-                )
-            )
+            #comment.author.message(
+            #    "☣ You were infected by the r/memes Memonavirus ☣",
+            #    "Hey u/{},\n\nYou contracted the r/memes Memonavirus from u/{}! You contracted it because you commented on their {}, [linked here](https://www.reddit.com{}).\n\n## Don't know what this is about?\n\nCheck out [this announcement](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) or [this update thread](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) to see what this is about!]\n\n\n\n^This ^is ^a ^bot. ^This ^was ^performed ^automatically.".
+            #    format(
+            #        comment.author.name,
+            #        infected_by.author.name,
+            #        "comment" if type(infected_by) is models.Comment else "submission",
+            #        infected_by.permalink
+            #    )
+            #)
 
     except Exception as ex:
         logger.info("ERROR IN INFECT")
