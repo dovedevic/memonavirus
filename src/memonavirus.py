@@ -8,6 +8,7 @@ import typing
 import random
 
 from praw import models
+from webpage import construct
 
 logger = logging.getLogger(__name__)
 handler = logging.FileHandler('../logs/{}.log'.format(str(datetime.datetime.now()).replace(' ', '_').replace(':', 'h', 1).replace(':', 'm').split('.')[0][:-2]))
@@ -146,6 +147,16 @@ def save_data_new_hour(force=False):
             _repo.create_file(
                 "data/{}".format(repo_infc_filename),
                 "day {} hour {} automated hourly infection  update".format(repo_infc_filename.split('.')[-3], repo_infc_filename.split('.')[-2]),
+                fp.read()
+            )
+
+        logger.info("Upload done. Generating webpage...")
+        construct()
+        logger.info("Generated. Uploading...")
+        with open("../html/index.html", 'r') as fp:
+            _repo.create_file(
+                "html/index.html",
+                "day {} hour {} automated hourly html update".format(repo_cmnt_filename.split('.')[-3], repo_cmnt_filename.split('.')[-2]),
                 fp.read()
             )
 
