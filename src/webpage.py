@@ -57,7 +57,7 @@ def construct():
     hover = HoverTool(tooltips=[
         ("% of comments containing virus", "@y{%0%}"),
         ("# of comments", "@scale{0,0}"),
-        ("Hour", '@x{%I:%M %p EST, %b %d}')],
+        ("Hour", '@x{%H:00, %b %d}')],
         formatters={'x': 'datetime'}
         )
 
@@ -73,7 +73,7 @@ def construct():
 
     fig1.xaxis.formatter=DatetimeTickFormatter(
             hours=["%I:%M %p EST, %b %d"],
-            days=["%I:%M %p EST, %b %d"])
+            days=["%b %d"])
     fig1.xaxis.major_label_orientation = 3.14/4
 
     band = Band(base='x', upper='y', source=data, level='underlay',
@@ -88,7 +88,7 @@ def construct():
         ("% of users infected", "@ratio{%0%}"),
         ("# of infected users", "@y{0,0}"),
         ("# of active users", "@active{0,0}"),
-        ("Hour", '@x{%I:%M %p EST, %b %d}')],
+        ("Hour", '@x{%H:00, %b %d}')],
         formatters={'x': 'datetime'}
         )
 
@@ -112,7 +112,7 @@ def construct():
 
     fig2.xaxis.formatter=DatetimeTickFormatter(
             hours=["%I:%M %p EST, %b %d"],
-            days=["%I:%M %p EST, %b %d"])
+            days=["%b %d"])
     fig2.xaxis.major_label_orientation = 3.14/4
 
     band = Band(base='x', upper='ratio', source=data, level='underlay',
@@ -121,6 +121,64 @@ def construct():
 
     fig2.yaxis.formatter = NumeralTickFormatter(format="%0%")
     fig2.yaxis.axis_label = '% of active users'
+
+    # vis 3
+    hover = HoverTool(tooltips=[
+    ("# of infected users", "@y{0,0}"),
+    ("Hour", '@x{%H:00, %b %d}')],
+    formatters={'x': 'datetime'}
+    )
+
+    fig3 = figure(title='Pandemic spread (cumulative infections)',
+                 plot_width=500, plot_height=300, tools=[hover,"ywheel_zoom,pan,reset"],
+                x_axis_type='datetime')
+
+    x = infections.groupby(pd.Grouper(key='datetime', freq='H')).size().cumsum()
+    data = ColumnDataSource(data=dict(y=x.values, x=x.index.values))
+
+    fig3.line(y='y',x='x', line_width=2,
+              color='red', source=data)
+
+    band = Band(base='x', upper='y', source=data, level='underlay',
+                fill_alpha=0.35, fill_color='red')
+    fig3.add_layout(band)
+
+    fig3.xaxis.formatter=DatetimeTickFormatter(
+            hours=["%I:%M %p EST, %b %d"],
+            days=["%b %d"])
+    fig3.xaxis.major_label_orientation = 3.14/4
+
+    fig3.yaxis.formatter = NumeralTickFormatter(format="0,0")
+    fig3.yaxis.axis_label = '# of users'
+
+    # vis 4
+    hover = HoverTool(tooltips=[
+    ("# of newly infected users", "@y{0,0}"),
+    ("Hour", '@x{%H:00, %b %d}')],
+    formatters={'x': 'datetime'}
+    )
+
+    fig4 = figure(title='Pandemic spread (hourly infections)',
+                 plot_width=500, plot_height=300, tools=[hover,"ywheel_zoom,pan,reset"],
+                x_axis_type='datetime')
+
+    x = infections.groupby(pd.Grouper(key='datetime', freq='H')).size()
+    data = ColumnDataSource(data=dict(y=x.values, x=x.index.values))
+
+    fig4.line(y='y',x='x', line_width=2,
+              color='red', source=data)
+
+    band = Band(base='x', upper='y', source=data, level='underlay',
+                fill_alpha=0.35, fill_color='red')
+    fig4.add_layout(band)
+
+    fig4.xaxis.formatter=DatetimeTickFormatter(
+            hours=["%I:%M %p EST, %b %d"],
+            days=["%b %d"])
+    fig4.xaxis.major_label_orientation = 3.14/4
+
+    fig4.yaxis.formatter = NumeralTickFormatter(format="0,0")
+    fig4.yaxis.axis_label = '# of users'
 
     # ---------------- create tables----------------------
     from bokeh.models.widgets import Tabs, Panel
@@ -260,7 +318,7 @@ def construct():
     disclaimer = Div(text='''<p>Last updated at: {}<p>'''.format(datetime.now().strftime('%I:%M %p EST, %b %d')))
 
     # align everything into a single layout
-    composite_layout = column(header, countdown, row(fig1, fig2), blank_space, tabs, disclaimer)
+    composite_layout = column(header, countdown, row(fig4, fig3), row(fig2, fig1), blank_space, tabs, disclaimer)
 
     # render everything together
     script_bokeh, div_bokeh = components(composite_layout)
