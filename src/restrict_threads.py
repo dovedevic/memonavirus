@@ -36,8 +36,8 @@ logger.info("Authenticated as {}".format(_reddit.user.me().name))
 
 # Variables
 _debug = True
-infected_thread_id = "t3_fesexv" if _debug else "t3_tbd"
-noninfected_thread_id = "t3_fesexv" if _debug else "t3_tbd"
+infected_thread_id = "t3_fesexv" if _debug else "t3_g37bm0"
+noninfected_thread_id = "t3_fesexv" if _debug else "t3_g37eb9"
 # End Variables
 
 
