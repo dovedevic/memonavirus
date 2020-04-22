@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Logs folder
-logs/
+# logs/
 
 # Ignore creds file
 src/creds.json
