@@ -1,6 +1,6 @@
 # The r/memes Memonavirus
 
-This event repository is hosting the code and sources that support the event listed [here](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) on Reddit's r/memes.
+This event repository is hosting the code and sources that support the event listed [here](https://www.reddit.com/r/memes/comments/fky5cz/rmemes_memonavirus_community_event/) on Reddit's r/memes. Update thread [here](https://www.reddit.com/r/memes/comments/fm5k7j/rmemes_memonavirus_update_thread/).
 
 As an overview, this is what the repository holds
 
